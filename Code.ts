@@ -12,6 +12,30 @@ function sendTaskSummaryEmail() {
     _sendEmail(html);
 }
 
+const DateDiff = {
+    inDays: (d1: Date, d2: Date) => {
+        let t2 = d2.getTime();
+        let t1 = d1.getTime();
+
+        return parseInt(String((t2 - t1) / (24 * 3600 * 1000)));
+    },
+    inWeeks: (d1, d2) => {
+        let t2 = d2.getTime();
+        let t1 = d1.getTime();
+
+        return parseInt(String((t2 - t1) / (24 * 3600 * 1000 * 7)));
+    },
+    inMonths: (d1, d2) => {
+        let d1Y = d1.getFullYear();
+        let d2Y = d2.getFullYear();
+        let d1M = d1.getMonth();
+        let d2M = d2.getMonth();
+
+        return (d2M + 12 * d2Y) - (d1M + 12 * d1Y);
+    },
+    inYears: (d1, d2) => d2.getFullYear() - d1.getFullYear()
+};
+
 /**
  iterates through A:E colmn of the sheet
  saves in appropriate result object
@@ -31,9 +55,9 @@ function _getFilteredObject(sheet) {
         "future": []
     };
 
-    for (var i = 0; i < data.length; i++) {
-        var row = data[i];
-        var task = {task: row[TASK_COL], project: row[PROJECT_COL]};
+    for (let i = 0; i < data.length; i++) {
+        let row = data[i];
+        let task = {task: row[TASK_COL], project: row[PROJECT_COL]};
 
         if (task.task.trim() === "" || row[TASK_STATUS_COL] === "Completed") continue;
 
@@ -60,27 +84,27 @@ function _getFilteredObject(sheet) {
 
 
 function _getFormattedDataFromArray(o) {
-    var htmlBody = HtmlService.createHtmlOutputFromFile('tasks_mail_template').getContent();
+    let htmlBody = HtmlService.createHtmlOutputFromFile('tasks_mail_template').getContent();
 
-    var delayedItems = _getHtmlListItemsFromStatus(o, "delayed", "Delayed Tasks");
-    var todayItems = _getHtmlListItemsFromStatus(o, "today", "Tasks for Today");
-    var toDecidedItems = _getHtmlListItemsFromStatus(o, "to decide date", "Tasks to decide deadline");
-    var result = delayedItems + todayItems + toDecidedItems;
+    let delayedItems = _getHtmlListItemsFromStatus(o, "delayed", "Delayed Tasks");
+    let todayItems = _getHtmlListItemsFromStatus(o, "today", "Tasks for Today");
+    let toDecidedItems = _getHtmlListItemsFromStatus(o, "to decide date", "Tasks to decide deadline");
+    let result = delayedItems + todayItems + toDecidedItems;
 
-    htmlBody = htmlBody.replace("<replaceBodyContentHere></replaceBodyContentHere>", result)
-    Logger.log(htmlBody)
+    htmlBody = htmlBody.replace("<replaceBodyContentHere></replaceBodyContentHere>", result);
+    Logger.log(htmlBody);
     return htmlBody;
 }
 
 function _getHtmlListItemsFromStatus(o, status, statusTitle) {
-    var items = "<br><h3>" + statusTitle + "</h3><ul>";
+    let items = "<br><h3>" + statusTitle + "</h3><ul>";
 
-    var statusTasks = o[status];
-    for (var i = 0; i < statusTasks.length; i++) {
-        var task = statusTasks[i]
+    let statusTasks = o[status];
+    for (let i = 0; i < statusTasks.length; i++) {
+        let task = statusTasks[i];
         items += "<li><i>" + task.project + ": </i>" + task.task + "</li>";
     }
-    items += "</ul>"
+    items += "</ul>";
 
     return items;
 }
@@ -89,9 +113,9 @@ function _getHtmlListItemsFromStatus(o, status, statusTitle) {
  sends email to the user himself
  **/
 function _sendEmail(html) {
-    var email = Session.getActiveUser().getEmail();
-    var date = Utilities.formatDate(new Date(), "GMT+530", "dd MMM yyyy")
-    var subject = "Tasks summary for " + date;
+    const email = Session.getActiveUser().getEmail();
+    const date = Utilities.formatDate(new Date(), "GMT+530", "dd MMM yyyy");
+    const subject = `Tasks summary for ${date}`;
 
     MailApp.sendEmail({
         to: email,
@@ -102,28 +126,3 @@ function _sendEmail(html) {
 }
 
 
-var DateDiff = {
-    inDays: function (d1, d2) {
-        var t2 = d2.getTime();
-        var t1 = d1.getTime();
-
-        return parseInt((t2 - t1) / (24 * 3600 * 1000));
-    },
-    inWeeks: function (d1, d2) {
-        var t2 = d2.getTime();
-        var t1 = d1.getTime();
-
-        return parseInt((t2 - t1) / (24 * 3600 * 1000 * 7));
-    },
-    inMonths: function (d1, d2) {
-        var d1Y = d1.getFullYear();
-        var d2Y = d2.getFullYear();
-        var d1M = d1.getMonth();
-        var d2M = d2.getMonth();
-
-        return (d2M + 12 * d2Y) - (d1M + 12 * d1Y);
-    },
-    inYears: function (d1, d2) {
-        return d2.getFullYear() - d1.getFullYear();
-    }
-}
