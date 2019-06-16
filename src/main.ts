@@ -1,4 +1,4 @@
-require("./functions/**");
+import {sendTaskSummaryEmail} from "./functions/send-task-summary-email";
 
 function onOpen(e) {
     SpreadsheetApp.getUi()

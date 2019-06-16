@@ -4,3 +4,5 @@ package-lock.json
 .clasp.json
 .idea/
 /node_modules/
+/creds.json
+/.clasprc.json
