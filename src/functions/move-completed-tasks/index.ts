@@ -30,7 +30,7 @@ export function moveCompletedTasks() {
         }
     }
 
-    srcSheet.getRange(CURRENT_TASKS_SHEET.RANGE).sort({column: CurrentTasksColIndex.DATE, descending: true});
-    destSheet.getRange(COMPLETED_TASKS_SHEET.RANGE).sort({column: CompletedTasksColIndex.DATE, descending: true});
+    srcSheet.getRange(CURRENT_TASKS_SHEET.RANGE).sort({column: CurrentTasksColIndex.DATE, ascending: false});
+    destSheet.getRange(COMPLETED_TASKS_SHEET.RANGE).sort({column: CompletedTasksColIndex.DATE, ascending: false});
     Logger.log(`sheet sorting done for ${srcSheet.getName()}, ${destSheet.getName()}`);
 }
