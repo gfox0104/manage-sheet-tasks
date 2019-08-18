@@ -1,6 +1,6 @@
-export const CURRENT_TASKS_SHEET = {
-    FIRST_COL: "A",
-    LAST_COL: "F",
-    RANGE: "A2:F"
-};
-export const CURRENT_TASKS_SHEET_RANGE = "A2:F";
+export class CURRENT_TASKS_SHEET {
+    public static readonly FIRST_COL = "A";
+    public static readonly LAST_COL = "F";
+    public static readonly RANGE = "A2:F";
+}
+

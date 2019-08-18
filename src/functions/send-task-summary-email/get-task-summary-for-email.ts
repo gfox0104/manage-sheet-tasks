@@ -1,7 +1,7 @@
 import {ResultTask, TaskSummary} from "../../models/task-summary";
 import {dateDiffInDays} from "../../utils/date";
 import {CurrentTasksColIndex} from "../../models/sheet-col-index";
-import {CURRENT_TASKS_SHEET_RANGE} from "../../utils/active-ranges";
+import {CURRENT_TASKS_SHEET} from "../../utils/active-ranges";
 
 
 /**
@@ -14,7 +14,7 @@ import {CURRENT_TASKS_SHEET_RANGE} from "../../utils/active-ranges";
 export function getTaskSummaryForEmail(sheet: GoogleAppsScript.Spreadsheet.Sheet): TaskSummary {
 
     const TODAY = new Date();
-    const data = sheet.getRange(CURRENT_TASKS_SHEET_RANGE).getValues();
+    const data = sheet.getRange(CURRENT_TASKS_SHEET.RANGE).getValues();
     const result: TaskSummary = {
         "delayed": [],
         "today": [],
