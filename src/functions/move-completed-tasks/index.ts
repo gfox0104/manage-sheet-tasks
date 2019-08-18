@@ -1,5 +1,9 @@
-import {CurrentTasksColIndex} from "../../models/sheet-col-index";
-import {CURRENT_TASKS_SHEET} from "../../utils/active-ranges";
+import {
+    COMPLETED_TASKS_SHEET,
+    CompletedTasksColIndex,
+    CURRENT_TASKS_SHEET,
+    CurrentTasksColIndex
+} from "../../utils/active-ranges";
 
 
 export function moveCompletedTasks() {
@@ -15,13 +19,18 @@ export function moveCompletedTasks() {
         const srcRange = `${CURRENT_TASKS_SHEET.FIRST_COL}${row}:${CURRENT_TASKS_SHEET.LAST_COL}${row}`;
         const srcRow = srcSheet.getRange(srcRange);
         const srcRowVal = srcRow.getValues()[0];
-        if (srcRowVal[CurrentTasksColIndex.TASK_STATUS] === "Completed") {
+        if (srcRowVal[CurrentTasksColIndex.TASK_STATUS] === "Completed" ||
+            srcRowVal[CurrentTasksColIndex.TASK_STATUS] === "Not Required") {
             const destRowIndex = lastRowInDestSheet + i;
             const destRange = `${CURRENT_TASKS_SHEET.FIRST_COL}${destRowIndex}:${CURRENT_TASKS_SHEET.LAST_COL}${destRowIndex}`;
             const destRow = destSheet.getRange(destRange);
-            srcRow.copyTo(destRow);
+            srcRow.copyTo(destRow, {contentsOnly: true});
+            srcRow.deleteCells(SpreadsheetApp.Dimension.ROWS);
             Logger.log(`moved row from ${srcRange} -> ${destRange}`);
         }
-        // srcSheet.sort()
     }
+
+    srcSheet.getRange(CURRENT_TASKS_SHEET.RANGE).sort({column: CurrentTasksColIndex.DATE, descending: true});
+    destSheet.getRange(COMPLETED_TASKS_SHEET.RANGE).sort({column: CompletedTasksColIndex.DATE, descending: true});
+    Logger.log(`sheet sorting done for ${srcSheet.getName()}, ${destSheet.getName()}`);
 }

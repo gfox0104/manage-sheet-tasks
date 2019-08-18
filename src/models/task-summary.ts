@@ -34,5 +34,6 @@ export interface CurrentTaskRowItem {
 
 export type TaskStatusInSheet =
     "Completed" |
+    "Not Required" |
     "In Progress" |
     "Todo"

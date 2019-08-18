@@ -1,7 +1,6 @@
 import {ResultTask, TaskSummary} from "../../models/task-summary";
 import {dateDiffInDays} from "../../utils/date";
-import {CurrentTasksColIndex} from "../../models/sheet-col-index";
-import {CURRENT_TASKS_SHEET} from "../../utils/active-ranges";
+import {CURRENT_TASKS_SHEET, CurrentTasksColIndex} from "../../utils/active-ranges";
 
 
 /**
