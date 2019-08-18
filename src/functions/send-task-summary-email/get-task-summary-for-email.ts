@@ -1,21 +1,20 @@
 import {ResultTask, TaskSummary} from "../../models/task-summary";
 import {dateDiffInDays} from "../../utils/date";
+import {CurrentTasksColIndex} from "../../models/sheet-col-index";
+import {CURRENT_TASKS_SHEET_RANGE} from "../../utils/active-ranges";
 
 
 /**
  * iterates through A:E of the sheet
  * saves in appropriate result object and returns it
  *
+ * todo: update it as per priority matrix
  * @param sheet
  */
-export function getTaskSummary(sheet): TaskSummary {
-    const COL_PROJECT = 0;
-    const COL_TASK = 1;
-    const COL_DATE = 3;
-    const COL_TASK_STATUS = 4;
+export function getTaskSummaryForEmail(sheet: GoogleAppsScript.Spreadsheet.Sheet): TaskSummary {
 
     const TODAY = new Date();
-    const data = sheet.getRange('A2:E').getValues();
+    const data = sheet.getRange(CURRENT_TASKS_SHEET_RANGE).getValues();
     const result: TaskSummary = {
         "delayed": [],
         "today": [],
@@ -25,19 +24,19 @@ export function getTaskSummary(sheet): TaskSummary {
 
     data.forEach(row => {
         let task: ResultTask = {
-            task: row[COL_TASK],
-            project: row[COL_PROJECT]
+            task: row[CurrentTasksColIndex.TASK],
+            project: row[CurrentTasksColIndex.PROJECT]
         };
 
-        if (task.task.trim() === "" || row[COL_TASK_STATUS] === "Completed")
+        if (task.task.trim() === "" || row[CurrentTasksColIndex.TASK_STATUS] === "Completed")
             return;
 
-        if (row[COL_DATE] === "") {
+        if (row[CurrentTasksColIndex.DATE] === "") {
             result["to decide date"].push(task);
             return;
         }
 
-        let dateDiff = dateDiffInDays(TODAY, row[COL_DATE]);
+        let dateDiff = dateDiffInDays(TODAY, row[CurrentTasksColIndex.DATE]);
         if (dateDiff < 0) {
             Logger.log(`Delayed: ${task} ${dateDiff}`);
             result["delayed"].push(task);
